@@ -1,8 +1,9 @@
 import React from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
+// import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./App.css";
-import { Button } from "antd";
+import { Button, Card, Form, Input, Layout, Radio, Row, Select } from "antd";
+import { Content, Footer, Header } from "antd/es/layout/layout";
 // import AuthContextProvider from "./contexts/AuthContextProvider";
 const data = {
   athletic: {
@@ -27,60 +28,66 @@ const data = {
 
 const App = () => {
   return (
-    <div className="App">
-      <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-          <a class="navbar-brand" href="#">
-            UniversoleFits ShoeSizing Tool
-          </a>
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto"></ul>
-          </div>
-        </nav>
-        <form class="row g-3">
-          <div class="col-12">
-            <select class="form-select" aria-label="Default select example">
-              <option selected>Choose Shoe Type</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
-            </select>
-          </div>
-          <div class="col-12">
-            <select class="form-select" aria-label="Default select example">
-            <option selected>Choose Shoe Brand</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
-            </select>
-          </div>
-          <div class="col-12">
-            <select class="form-select" aria-label="Default select example">
-            <option selected>Choose Shoe Size</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
-            </select>
-          </div>
-          <div class="col-12">
-            <button type="submit" class="btn btn-primary">
-              Filter
-            </button>
-          </div>
-        </form>
-      </div>
+    <div>
+      <>
+        <Layout>
+          <Content>
+            <Card>
+              <Form>
+                {/* <Form.Item label="Required Mark" name="requiredMarkValue">
+                  <Radio.Group>
+                    <Radio.Button value="optional">Optional</Radio.Button>
+                    <Radio.Button value>Required</Radio.Button>
+                  </Radio.Group>
+                </Form.Item> */}
+                <Form.Item
+                  label="Gender"
+                  required
+                  tooltip="This is a required field"
+                >
+                  <Select placeholder="input gender">
+                    <Select.Option label="Male" value="Male" />
+                    <Select.Option label="Female" value="Female" />
+                  </Select>
+                </Form.Item>
+                <Form.Item
+                  label="Class"
+                  required
+                  tooltip="This is a required field"
+                >
+                  <Select placeholder="input class">
+                    <Select.Option label="Male" value="Male" />
+                    <Select.Option label="Female" value="Female" />
+                  </Select>
+                </Form.Item>
+                <Form.Item
+                  label="Brand"
+                  required
+                  tooltip={{
+                    title: "Tooltip with customize icon",
+                    // icon: <InfoCircleOutlined />,
+                  }}
+                >
+                  <Input placeholder="input brand" />
+                </Form.Item>
+                <Form.Item
+                  label="Size"
+                  required
+                  tooltip={{
+                    title: "Tooltip with customize icon",
+                    // icon: <InfoCircleOutlined />,
+                  }}
+                >
+                  <Input placeholder="input Size" />
+                </Form.Item>
+                <Form.Item>
+                  <Button type="primary">Submit</Button>
+                </Form.Item>
+              </Form>
+            </Card>
+          </Content>
+        </Layout>
+      </>
     </div>
   );
 };
