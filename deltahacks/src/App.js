@@ -21,7 +21,6 @@ function App() {
     <div className="App">
       Enter Shoe Info:
       <button onClick={test}>get shoe </button>
-      <input >get shoe </input>
 
     </div>
   );
