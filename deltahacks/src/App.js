@@ -2,39 +2,51 @@ import React, { useEffect, useState } from "react";
 
 import "./App.css";
 import {
+  Alert,
   Button,
   Card,
   Col,
+  Divider,
   Form,
   Image,
   Input,
   Layout,
   Radio,
   Row,
+  Space,
   Select,
   Statistic,
   Typography,
+  Tabs,
+  message,
+  Upload,
+  Avatar,
 } from "antd";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import { ShoeDataset } from "./shoe";
-const data = {
-  athletic: {
-    Nike: -0.5,
-    Adidas: 0,
-    Puma: 0,
-    Reebok: -0.5,
+import img from "./universole.png";
+import logo from "./uf.png";
+
+import { genImagePreviewStyle } from "antd/es/image/style";
+// import { InboxOutlined } from "@ant-design/icons";
+const { Dragger } = Upload;
+const props = {
+  name: "file",
+  multiple: true,
+  action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
+  onChange(info) {
+    const { status } = info.file;
+    if (status !== "uploading") {
+      console.log(info.file, info.fileList);
+    }
+    if (status === "done") {
+      message.success(`${info.file.name} file uploaded successfully.`);
+    } else if (status === "error") {
+      message.error(`${info.file.name} file upload failed.`);
+    }
   },
-  dress: {
-    "Cole Haan": -0.5,
-    "Johnston & Murphy": 0,
-    Aldo: -0.5,
-    "Calvin Klein": -0.5,
-  },
-  casual: {
-    Converse: 0,
-    Vans: 0,
-    Toms: 0,
-    Sperry: 0,
+  onDrop(e) {
+    console.log("Dropped files", e.dataTransfer.files);
   },
 };
 
@@ -51,6 +63,7 @@ const App = () => {
   useEffect(() => {
     setOptions(getOptions());
   }, []);
+
   function handleClick() {
     console.log("gender", gender);
     console.log("style", style);
@@ -114,60 +127,102 @@ const App = () => {
       <>
         <Layout>
           <Header style={{ height: "80px" }}>
-            <Typography.Title style={{ color: "grey" }}>
-              UniversoleFit Sizing Tool
-            </Typography.Title>
-            {/* <Image src={universole}></Image> */}
+            <Row>
+              <Typography.Title style={{ color: "#f0ffff" }}>
+                UniversoleFit
+              </Typography.Title>{" "}
+              <Space>
+                <Avatar src={logo} size="large"></Avatar>
+              </Space>
+            </Row>
           </Header>
           <Content>
             <Card>
+              <Typography.Title level={5} >
+                Welcome to the UniversoleFit Official Shoe Sizing Tool. Use our
+                standardized measurements to order shoes online without
+                worrying about wrong sizing!
+              </Typography.Title>
+              <Alert
+                message="Input data on favourite fitting shoe to get your standardized UniversoleFit shoe size for the best shoe shopping experience!"
+                type="info"
+                showIcon
+              />
+              <br />
               <Form>
                 <Form.Item
                   label="Gender"
                   required
-                  tooltip="This is a required field"
+                  tooltip="Input shoe-specified gender!"
                 >
                   <Select onChange={setGender} placeholder="input gender">
                     <Select.Option label="Male" value="Male" />
                     <Select.Option label="Female" value="Female" />
                   </Select>
                 </Form.Item>
-                <Form.Item
-                  label="Class"
-                  required
-                  tooltip="This is a required field"
-                >
-                  <Select
-                    onChange={(e) => handleChangeStyle(e)}
-                    placeholder="input class"
-                  >
-                    {Object.keys((!!options.style && options.style) || {}).map(
-                      (s) => {
-                        console.log(s);
-                        return <Select.Option label={s} value={s} />;
-                      }
-                    )}
-                  </Select>
-                </Form.Item>
-                <Form.Item
-                  label="Brand"
-                  required
-                  tooltip={{
-                    title: "Tooltip with customize icon",
-                    // icon: <InfoCircleOutlined />,
-                  }}
-                >
-                  <Select onChange={setBrand} placeholder="input brand">
-                    {((!!brandOptions && brandOptions) || []).map((s) => {
-                      return <Select.Option label={s} value={s} />;
-                    })}
-                  </Select>
-                </Form.Item>
+
+                {/* <Tabs>
+                  <Tabs.TabPane tab={"Input Shoe Style"} key={"a"}> */}
+                {/* <Space> */}
+                <Row>
+                  <Col span={8}>
+                    <Typography.Text strong>Option 1:</Typography.Text>
+                    <Form.Item
+                      label="Class"
+                      required
+                      tooltip="Input shoe type!"
+                    >
+                      <Select
+                        onChange={(e) => handleChangeStyle(e)}
+                        placeholder="input class"
+                      >
+                        {Object.keys(
+                          (!!options.style && options.style) || {}
+                        ).map((s) => {
+                          console.log(s);
+                          return <Select.Option label={s} value={s} />;
+                        })}
+                      </Select>
+                    </Form.Item>
+                    <Form.Item
+                      label="Brand"
+                      required
+                      tooltip={{
+                        title: "Input shoe brand",
+                        // icon: <InfoCircleOutlined />,
+                      }}
+                    >
+                      <Select onChange={setBrand} placeholder="input brand">
+                        {((!!brandOptions && brandOptions) || []).map((s) => {
+                          return <Select.Option label={s} value={s} />;
+                        })}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Divider type="vertical" />
+
+                  <Col span={8}>
+                    <Typography.Text strong>Option 2:</Typography.Text>
+                    <Dragger {...props}>
+                      <p className="ant-upload-text">
+                        Click/drag an image of your shoes and autofill the
+                        information with our auto detection!
+                      </p>
+                    </Dragger>{" "}
+                  </Col>
+                </Row>
+                {/* </Space> */}
+
+                {/* </Tabs.TabPane>
+                  <Tabs.TabPane tab={`Upload Shoe Image`} key={"b"}>
+                    <Upload></Upload>
+                  </Tabs.TabPane>
+                </Tabs> */}
                 <Form.Item
                   label="Size"
                   required
                   tooltip={{
-                    title: "Tooltip with customize icon",
+                    title: "Input shoe size!",
                     // icon: <InfoCircleOutlined />,
                   }}
                 >
@@ -180,21 +235,31 @@ const App = () => {
                   </Select>
                 </Form.Item>
                 <Form.Item>
-                  <Button onClick={handleClick} type="primary">
-                    Submit
-                  </Button>
+                  <Row>
+                    <Button onClick={handleClick} type="default">
+                      Get Size!
+                    </Button>{" "}
+                    <Divider type="vertical" />
+                    <Statistic
+                      title="UniversoleFit Size: "
+                      value={correctedSize}
+                      // prefix={<CheckCircleOutl ined/>}
+                      // loading
+                    />
+                    <Divider type="vertical" />
+                    <Button
+                      type="primary"
+                      // shape="circle"
+                      // icon={<SearchOutlined />}
+                    >
+                      Shop!
+                    </Button>
+                  </Row>
                 </Form.Item>
+                {/* <Col span={12}> */}
+
+                {/* </Col> */}
               </Form>
-            </Card>
-            {/* <Card>New: {correctedSize}</Card> */}
-            <Card>
-              <Col span={12}>
-                <Statistic
-                  title="UniversoleFit Size: "
-                  value={correctedSize}
-                  // loading
-                />
-              </Col>
             </Card>
           </Content>
         </Layout>
