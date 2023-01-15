@@ -1,10 +1,22 @@
-import React from "react";
-// import "bootstrap/dist/css/bootstrap.min.css";
-// import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import React, { useEffect, useState } from "react";
+
 import "./App.css";
-import { Button, Card, Form, Input, Layout, Radio, Row, Select } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  Image,
+  Input,
+  Layout,
+  Radio,
+  Row,
+  Select,
+  Statistic,
+  Typography,
+} from "antd";
 import { Content, Footer, Header } from "antd/es/layout/layout";
-// import AuthContextProvider from "./contexts/AuthContextProvider";
+import { ShoeDataset } from "./shoe";
 const data = {
   athletic: {
     Nike: -0.5,
@@ -27,25 +39,95 @@ const data = {
 };
 
 const App = () => {
+  const [gender, setGender] = useState();
+  const [style, setStyle] = useState();
+  const [brand, setBrand] = useState();
+  const [size, setSize] = useState();
+  const [correctedSize, setCorrectedSize] = useState();
+
+  const [options, setOptions] = useState({});
+  const [brandOptions, setBrandOptions] = useState([]);
+
+  useEffect(() => {
+    setOptions(getOptions());
+  }, []);
+  function handleClick() {
+    console.log("gender", gender);
+    console.log("style", style);
+    console.log("brand", brand);
+    console.log("size", size);
+    const newShoeSize = shoeMatch(gender, style, brand, size);
+    console.log(newShoeSize);
+    setCorrectedSize(newShoeSize);
+  }
+
+  function handleChangeStyle(e) {
+    setStyle(e);
+    setOptions(getOptions());
+    setBrandOptions(getBrands(e));
+
+    console.log("brandOptions", console.log(brandOptions));
+  }
+
+  function shoeMatch(Gender, Class, brand, size) {
+    for (let i = 0; i < ShoeDataset.length; i++) {
+      if (Gender === ShoeDataset[i].Gender) {
+        console.log("Class", Class);
+        console.log("Class2", ShoeDataset[i].Class);
+
+        if (Class === ShoeDataset[i].Class) {
+          // return "x";
+          for (const shoe_brand in ShoeDataset[i].Brand) {
+            if (shoe_brand === brand) {
+              console.log("sizefinal", size + ShoeDataset[i].Brand[shoe_brand]);
+              return size + ShoeDataset[i].Brand[shoe_brand];
+            }
+          }
+        }
+      }
+    }
+  }
+
+  function getOptions() {
+    let option = {
+      style: {},
+    };
+    ShoeDataset.forEach((data) => {
+      // option.gender.push(data.Gender);
+      option.style[data.Class] = [];
+      Object.keys(data.Brand).forEach((b) => {
+        option.style[data.Class].push(b);
+      });
+    });
+    console.log("options", option);
+    return option;
+  }
+  function getBrands(style) {
+    console.log("options", options);
+    console.log("options.style[style]", options.style[style]);
+
+    return options.style[style];
+  }
+
   return (
     <div>
       <>
         <Layout>
+          <Header style={{ height: "80px" }}>
+            <Typography.Title style={{ color: "grey" }}>
+              UniversoleFit Sizing Tool
+            </Typography.Title>
+            {/* <Image src={universole}></Image> */}
+          </Header>
           <Content>
             <Card>
               <Form>
-                {/* <Form.Item label="Required Mark" name="requiredMarkValue">
-                  <Radio.Group>
-                    <Radio.Button value="optional">Optional</Radio.Button>
-                    <Radio.Button value>Required</Radio.Button>
-                  </Radio.Group>
-                </Form.Item> */}
                 <Form.Item
                   label="Gender"
                   required
                   tooltip="This is a required field"
                 >
-                  <Select placeholder="input gender">
+                  <Select onChange={setGender} placeholder="input gender">
                     <Select.Option label="Male" value="Male" />
                     <Select.Option label="Female" value="Female" />
                   </Select>
@@ -55,9 +137,16 @@ const App = () => {
                   required
                   tooltip="This is a required field"
                 >
-                  <Select placeholder="input class">
-                    <Select.Option label="Male" value="Male" />
-                    <Select.Option label="Female" value="Female" />
+                  <Select
+                    onChange={(e) => handleChangeStyle(e)}
+                    placeholder="input class"
+                  >
+                    {Object.keys((!!options.style && options.style) || {}).map(
+                      (s) => {
+                        console.log(s);
+                        return <Select.Option label={s} value={s} />;
+                      }
+                    )}
                   </Select>
                 </Form.Item>
                 <Form.Item
@@ -68,7 +157,11 @@ const App = () => {
                     // icon: <InfoCircleOutlined />,
                   }}
                 >
-                  <Input placeholder="input brand" />
+                  <Select onChange={setBrand} placeholder="input brand">
+                    {((!!brandOptions && brandOptions) || []).map((s) => {
+                      return <Select.Option label={s} value={s} />;
+                    })}
+                  </Select>
                 </Form.Item>
                 <Form.Item
                   label="Size"
@@ -78,12 +171,30 @@ const App = () => {
                     // icon: <InfoCircleOutlined />,
                   }}
                 >
-                  <Input placeholder="input Size" />
+                  <Select onChange={setSize} placeholder="input brand">
+                    {Array.from({ length: 21 }, (_, i) => 5.5 + i * 0.5).map(
+                      (s) => {
+                        return <Select.Option label={s} value={s} />;
+                      }
+                    )}
+                  </Select>
                 </Form.Item>
                 <Form.Item>
-                  <Button type="primary">Submit</Button>
+                  <Button onClick={handleClick} type="primary">
+                    Submit
+                  </Button>
                 </Form.Item>
               </Form>
+            </Card>
+            {/* <Card>New: {correctedSize}</Card> */}
+            <Card>
+              <Col span={12}>
+                <Statistic
+                  title="UniversoleFit Size: "
+                  value={correctedSize}
+                  // loading
+                />
+              </Col>
             </Card>
           </Content>
         </Layout>
